@@ -1,0 +1,1050 @@
+"""Заявка"""
+type Application {
+  id: ID!
+
+  """Статус"""
+  status: ApplicationStatusEnum!
+
+  """ИНН"""
+  inn: String
+
+  """Телефон"""
+  phone: String!
+
+  """Email"""
+  email: String
+
+  """ФИО"""
+  fio: String!
+
+  """Комментарий"""
+  comment: String
+
+  """Стоимость услуг заявки"""
+  service_cost: Int
+
+  """Дата создания"""
+  created_at: DateTimeTz!
+
+  """Дата обновления"""
+  updated_at: DateTimeTz!
+
+  """Услуги заявки"""
+  applicationServices: [ApplicationService!]
+}
+
+"""A paginated list of Application items."""
+type ApplicationPaginator {
+  """Pagination information about the list of items."""
+  paginatorInfo: PaginatorInfo!
+
+  """A list of Application items."""
+  data: [Application!]!
+}
+
+type ApplicationService {
+  id: ID!
+
+  """ID заявки"""
+  application_id: Int
+
+  """Выбрана"""
+  is_selected: Boolean
+
+  """Название услуги"""
+  name: String!
+
+  """Описание услуги"""
+  description: String
+
+  """Стоимость услуги"""
+  cost: Int
+
+  """Сортировка"""
+  sort: Int!
+
+  """Заявка"""
+  application: Application!
+
+  """Дата создания"""
+  created_at: DateTimeTz!
+
+  """Дата обновления"""
+  updated_at: DateTimeTz!
+}
+
+"""A paginated list of ApplicationService items."""
+type ApplicationServicePaginator {
+  """Pagination information about the list of items."""
+  paginatorInfo: PaginatorInfo!
+
+  """A list of ApplicationService items."""
+  data: [ApplicationService!]!
+}
+
+enum ApplicationStatusEnum {
+  """New"""
+  NEW
+
+  """Processing"""
+  PROCESSING
+
+  """Closed"""
+  CLOSED
+
+  """Rejected"""
+  REJECTED
+}
+
+input CreateApplicationInput {
+  """ИНН"""
+  inn: String
+
+  """Телефон"""
+  phone: String!
+
+  """Email"""
+  email: String
+
+  """ФИО"""
+  fio: String!
+
+  """Комментарий"""
+  comment: String
+
+  """ID выбранных услуг"""
+  selected_service_ids: [Int!]
+}
+
+input CreateRoleInput {
+  name: String!
+  comment: String
+  permissions: [PermissionsEnum!]!
+}
+
+input CreateServiceInput {
+  """Наименование услуги"""
+  name: String!
+
+  """Описание"""
+  description: String
+
+  """Стоимость"""
+  cost: Int
+  sort: Int!
+  is_active: Boolean
+}
+
+"""Дата в формате `Y-m-d`, например `2011-05-23`."""
+scalar Date
+
+"""
+Метка времени в формате `Y-m-d H:i:s`, например `2018-05-23 13:43:32`.
+"""
+scalar DateTime
+
+"""
+Метка времени в формате `Y-m-d H:i:s`, например `2018-05-23T13:43:32+0000`.
+"""
+scalar DateTimeTz
+
+type DeleteResponse {
+  ok: Boolean!
+}
+
+enum InputApplicationServiceEnum {
+  ID
+  NAME
+  DESCRIPTION
+  COST
+  SORT
+  IS_SELECTED
+  CREATED_AT
+  UPDATED_AT
+}
+
+enum InputApplicationsEnum {
+  ID
+  STATUS
+  INN
+  PHONE
+  EMAIL
+  FIO
+  COMMENT
+  SERVICE_COST
+  CREATED_AT
+  UPDATED_AT
+}
+
+enum InputUsersEnum {
+  ID
+}
+
+input LoginInput {
+  login: String!
+  password: String!
+}
+
+"""
+Loose type that allows any value. Be careful when passing in large `Int` or `Float` literals,
+as they may not be parsed correctly on the server side. Use `String` literals if you are
+dealing with really large numbers to be on the safe side.
+"""
+scalar Mixed
+
+type Mutation {
+  """Вход и получение данных авторизованного пользователя."""
+  login(input: LoginInput): UserLogin!
+
+  """
+  Выход и получение данных разавторизуемого
+  пользователя в последний раз.
+  """
+  logout: User
+
+  """Создание роли"""
+  createRole(input: CreateRoleInput!): Role
+
+  """Редактирование роли"""
+  updateRole(input: UpdateRoleInput!): Role
+
+  """Удаление роли"""
+  deleteRole(id: ID!): DeleteResponse
+
+  """Добавление заявки"""
+  createApplication(input: CreateApplicationInput!): Application
+
+  """Редактирование заявки"""
+  updateApplication(input: UpdateApplicationInput!): Application
+
+  """Удаление заявки"""
+  deleteApplication(id: ID!): DeleteResponse
+
+  """Редактирование услуги заявки"""
+  updateApplicationService(input: UpdateApplicationServiceInput!): ApplicationService
+
+  """Удаление услуги заявки"""
+  deleteApplicationService(id: ID!): DeleteResponse
+
+  """Добавление услуги"""
+  createService(input: CreateServiceInput!): Service
+
+  """Редактирование услуги"""
+  updateService(input: UpdateServiceInput!): Service
+
+  """Удаление услуги"""
+  deleteService(id: ID!): DeleteResponse
+}
+
+"""Allows ordering a list of records."""
+input OrderByClause {
+  """The column that is used for ordering."""
+  column: String!
+
+  """The direction that is used for ordering."""
+  order: SortOrder!
+}
+
+"""
+Aggregate functions when ordering by a relation without specifying a column.
+"""
+enum OrderByRelationAggregateFunction {
+  """Amount of items."""
+  COUNT
+}
+
+"""
+Aggregate functions when ordering by a relation that may specify a column.
+"""
+enum OrderByRelationWithColumnAggregateFunction {
+  """Average."""
+  AVG
+
+  """Minimum."""
+  MIN
+
+  """Maximum."""
+  MAX
+
+  """Sum."""
+  SUM
+
+  """Amount of items."""
+  COUNT
+}
+
+"""Information about pagination using a Relay style cursor connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """The cursor to continue paginating backwards."""
+  startCursor: String
+
+  """The cursor to continue paginating forwards."""
+  endCursor: String
+
+  """Total number of nodes in the paginated connection."""
+  total: Int!
+
+  """Number of nodes in the current page."""
+  count: Int!
+
+  """Index of the current page."""
+  currentPage: Int!
+
+  """Index of the last available page."""
+  lastPage: Int!
+}
+
+"""Information about pagination using a fully featured paginator."""
+type PaginatorInfo {
+  """Number of items in the current page."""
+  count: Int!
+
+  """Index of the current page."""
+  currentPage: Int!
+
+  """Index of the first item in the current page."""
+  firstItem: Int
+
+  """Are there more pages after this one?"""
+  hasMorePages: Boolean!
+
+  """Index of the last item in the current page."""
+  lastItem: Int
+
+  """Index of the last available page."""
+  lastPage: Int!
+
+  """Number of items per page."""
+  perPage: Int!
+
+  """Number of total available items."""
+  total: Int!
+}
+
+"""Разрешения"""
+type Permission {
+  id: ID!
+
+  """Название"""
+  name: PermissionsEnum!
+
+  """Подсистема приложения"""
+  subsystem: SubsystemEnum!
+
+  """Комментарий"""
+  comment: String
+}
+
+enum PermissionsEnum {
+  """Create user"""
+  CREATE_USER
+
+  """Read user"""
+  READ_USER
+
+  """Read users list"""
+  READ_USERS_LIST
+
+  """Update user"""
+  UPDATE_USER
+
+  """Delete user"""
+  DELETE_USER
+
+  """Deactivate user"""
+  DEACTIVATE_USER
+
+  """View roles list"""
+  VIEW_ROLES_LIST
+
+  """View role"""
+  VIEW_ROLE
+
+  """Edit role"""
+  EDIT_ROLE
+
+  """Create role"""
+  CREATE_ROLE
+
+  """Assign role"""
+  ASSIGN_ROLE
+
+  """Delete role"""
+  DELETE_ROLE
+}
+
+"""Запросы к API"""
+type Query {
+  """Получить текущего пользователя"""
+  me: User
+
+  """Просмотр пользователя"""
+  user(id: ID): User
+
+  """Просмотр разрешения"""
+  permission(id: ID!): Permission
+
+  """Просмотр списка разрешений"""
+  permissions: [Permission!]!
+
+  """Просмотр роли"""
+  role(id: ID!): Role
+
+  """Просмотр списка ролей"""
+  roles(where: QueryRolesWhereWhereConditions): [Role!]!
+
+  """Просмотр заявки"""
+  application(id: ID!): Application
+
+  """Просмотр услуги"""
+  service(id: ID!): Service
+
+  """Список пользователей"""
+  users(
+    where: QueryUsersWhereWhereConditions
+    hasRoles: QueryUsersHasRolesWhereHasConditions
+
+    """Limits number of fetched items. Maximum allowed value: 10000."""
+    first: Int = 10000
+
+    """The offset from which items are returned."""
+    page: Int
+  ): UserPaginator
+
+  """Просмотр списка заявок"""
+  applications(
+    where: QueryApplicationsWhereWhereConditions
+    orderBy: [QueryApplicationsOrderByOrderByClause!]
+
+    """Limits number of fetched items. Maximum allowed value: 10000."""
+    first: Int = 10000
+
+    """The offset from which items are returned."""
+    page: Int
+  ): ApplicationPaginator
+
+  """Услуги заявки"""
+  applicationService(
+    where: QueryApplicationServiceWhereWhereConditions
+    hasApplication: QueryApplicationServiceHasApplicationWhereHasConditions
+
+    """Limits number of fetched items. Maximum allowed value: 10000."""
+    first: Int = 10000
+
+    """The offset from which items are returned."""
+    page: Int
+  ): ApplicationServicePaginator
+
+  """Просмотр списка услуг"""
+  services(
+    orderBy: [QueryServicesOrderByOrderByClause!]
+
+    """Limits number of fetched items. Maximum allowed value: 10000."""
+    first: Int = 10000
+
+    """The offset from which items are returned."""
+    page: Int
+  ): ServicePaginator
+}
+
+"""Allowed column names for Query.applicationService.hasApplication."""
+enum QueryApplicationServiceHasApplicationColumn {
+  ID
+}
+
+"""
+Dynamic WHERE conditions for the `hasApplication` argument on the query `applicationService`.
+"""
+input QueryApplicationServiceHasApplicationWhereHasConditions {
+  """The column that is used for the condition."""
+  column: QueryApplicationServiceHasApplicationColumn
+
+  """The operator that is used for the condition."""
+  operator: SQLOperator = EQ
+
+  """The value that is used for the condition."""
+  value: Mixed
+
+  """A set of conditions that requires all conditions to match."""
+  AND: [QueryApplicationServiceHasApplicationWhereHasConditions!]
+
+  """A set of conditions that requires at least one condition to match."""
+  OR: [QueryApplicationServiceHasApplicationWhereHasConditions!]
+
+  """
+  Check whether a relation exists. Extra conditions or a minimum amount can be applied.
+  """
+  HAS: QueryApplicationServiceHasApplicationWhereHasConditionsRelation
+}
+
+"""
+Dynamic HAS conditions for WHERE conditions for the `hasApplication` argument on the query `applicationService`.
+"""
+input QueryApplicationServiceHasApplicationWhereHasConditionsRelation {
+  """The relation that is checked."""
+  relation: String!
+
+  """The comparison operator to test against the amount."""
+  operator: SQLOperator = GTE
+
+  """The amount to test."""
+  amount: Int = 1
+
+  """Additional condition logic."""
+  condition: QueryApplicationServiceHasApplicationWhereHasConditions
+}
+
+"""
+Dynamic WHERE conditions for the `where` argument on the query `applicationService`.
+"""
+input QueryApplicationServiceWhereWhereConditions {
+  """The column that is used for the condition."""
+  column: InputApplicationServiceEnum
+
+  """The operator that is used for the condition."""
+  operator: SQLOperator = EQ
+
+  """The value that is used for the condition."""
+  value: Mixed
+
+  """A set of conditions that requires all conditions to match."""
+  AND: [QueryApplicationServiceWhereWhereConditions!]
+
+  """A set of conditions that requires at least one condition to match."""
+  OR: [QueryApplicationServiceWhereWhereConditions!]
+
+  """
+  Check whether a relation exists. Extra conditions or a minimum amount can be applied.
+  """
+  HAS: QueryApplicationServiceWhereWhereConditionsRelation
+}
+
+"""
+Dynamic HAS conditions for WHERE conditions for the `where` argument on the query `applicationService`.
+"""
+input QueryApplicationServiceWhereWhereConditionsRelation {
+  """The relation that is checked."""
+  relation: String!
+
+  """The comparison operator to test against the amount."""
+  operator: SQLOperator = GTE
+
+  """The amount to test."""
+  amount: Int = 1
+
+  """Additional condition logic."""
+  condition: QueryApplicationServiceWhereWhereConditions
+}
+
+"""Order by clause for Query.applications.orderBy."""
+input QueryApplicationsOrderByOrderByClause {
+  """The column that is used for ordering."""
+  column: InputApplicationsEnum!
+
+  """The direction that is used for ordering."""
+  order: SortOrder!
+}
+
+"""
+Dynamic WHERE conditions for the `where` argument on the query `applications`.
+"""
+input QueryApplicationsWhereWhereConditions {
+  """The column that is used for the condition."""
+  column: InputApplicationsEnum
+
+  """The operator that is used for the condition."""
+  operator: SQLOperator = EQ
+
+  """The value that is used for the condition."""
+  value: Mixed
+
+  """A set of conditions that requires all conditions to match."""
+  AND: [QueryApplicationsWhereWhereConditions!]
+
+  """A set of conditions that requires at least one condition to match."""
+  OR: [QueryApplicationsWhereWhereConditions!]
+
+  """
+  Check whether a relation exists. Extra conditions or a minimum amount can be applied.
+  """
+  HAS: QueryApplicationsWhereWhereConditionsRelation
+}
+
+"""
+Dynamic HAS conditions for WHERE conditions for the `where` argument on the query `applications`.
+"""
+input QueryApplicationsWhereWhereConditionsRelation {
+  """The relation that is checked."""
+  relation: String!
+
+  """The comparison operator to test against the amount."""
+  operator: SQLOperator = GTE
+
+  """The amount to test."""
+  amount: Int = 1
+
+  """Additional condition logic."""
+  condition: QueryApplicationsWhereWhereConditions
+}
+
+"""Allowed column names for Query.roles.where."""
+enum QueryRolesWhereColumn {
+  NAME
+  ID
+}
+
+"""
+Dynamic WHERE conditions for the `where` argument on the query `roles`.
+"""
+input QueryRolesWhereWhereConditions {
+  """The column that is used for the condition."""
+  column: QueryRolesWhereColumn
+
+  """The operator that is used for the condition."""
+  operator: SQLOperator = EQ
+
+  """The value that is used for the condition."""
+  value: Mixed
+
+  """A set of conditions that requires all conditions to match."""
+  AND: [QueryRolesWhereWhereConditions!]
+
+  """A set of conditions that requires at least one condition to match."""
+  OR: [QueryRolesWhereWhereConditions!]
+
+  """
+  Check whether a relation exists. Extra conditions or a minimum amount can be applied.
+  """
+  HAS: QueryRolesWhereWhereConditionsRelation
+}
+
+"""
+Dynamic HAS conditions for WHERE conditions for the `where` argument on the query `roles`.
+"""
+input QueryRolesWhereWhereConditionsRelation {
+  """The relation that is checked."""
+  relation: String!
+
+  """The comparison operator to test against the amount."""
+  operator: SQLOperator = GTE
+
+  """The amount to test."""
+  amount: Int = 1
+
+  """Additional condition logic."""
+  condition: QueryRolesWhereWhereConditions
+}
+
+"""Allowed column names for Query.services.orderBy."""
+enum QueryServicesOrderByColumn {
+  ID
+  NAME
+  DESCRIPTION
+  COST
+  SORT
+  IS_ACTIVE
+  CREATED_AT
+  UPDATED_AT
+}
+
+"""Order by clause for Query.services.orderBy."""
+input QueryServicesOrderByOrderByClause {
+  """The column that is used for ordering."""
+  column: QueryServicesOrderByColumn!
+
+  """The direction that is used for ordering."""
+  order: SortOrder!
+}
+
+"""Allowed column names for Query.users.hasRoles."""
+enum QueryUsersHasRolesColumn {
+  NAME
+}
+
+"""
+Dynamic WHERE conditions for the `hasRoles` argument on the query `users`.
+"""
+input QueryUsersHasRolesWhereHasConditions {
+  """The column that is used for the condition."""
+  column: QueryUsersHasRolesColumn
+
+  """The operator that is used for the condition."""
+  operator: SQLOperator = EQ
+
+  """The value that is used for the condition."""
+  value: Mixed
+
+  """A set of conditions that requires all conditions to match."""
+  AND: [QueryUsersHasRolesWhereHasConditions!]
+
+  """A set of conditions that requires at least one condition to match."""
+  OR: [QueryUsersHasRolesWhereHasConditions!]
+
+  """
+  Check whether a relation exists. Extra conditions or a minimum amount can be applied.
+  """
+  HAS: QueryUsersHasRolesWhereHasConditionsRelation
+}
+
+"""
+Dynamic HAS conditions for WHERE conditions for the `hasRoles` argument on the query `users`.
+"""
+input QueryUsersHasRolesWhereHasConditionsRelation {
+  """The relation that is checked."""
+  relation: String!
+
+  """The comparison operator to test against the amount."""
+  operator: SQLOperator = GTE
+
+  """The amount to test."""
+  amount: Int = 1
+
+  """Additional condition logic."""
+  condition: QueryUsersHasRolesWhereHasConditions
+}
+
+"""
+Dynamic WHERE conditions for the `where` argument on the query `users`.
+"""
+input QueryUsersWhereWhereConditions {
+  """The column that is used for the condition."""
+  column: InputUsersEnum
+
+  """The operator that is used for the condition."""
+  operator: SQLOperator = EQ
+
+  """The value that is used for the condition."""
+  value: Mixed
+
+  """A set of conditions that requires all conditions to match."""
+  AND: [QueryUsersWhereWhereConditions!]
+
+  """A set of conditions that requires at least one condition to match."""
+  OR: [QueryUsersWhereWhereConditions!]
+
+  """
+  Check whether a relation exists. Extra conditions or a minimum amount can be applied.
+  """
+  HAS: QueryUsersWhereWhereConditionsRelation
+}
+
+"""
+Dynamic HAS conditions for WHERE conditions for the `where` argument on the query `users`.
+"""
+input QueryUsersWhereWhereConditionsRelation {
+  """The relation that is checked."""
+  relation: String!
+
+  """The comparison operator to test against the amount."""
+  operator: SQLOperator = GTE
+
+  """The amount to test."""
+  amount: Int = 1
+
+  """Additional condition logic."""
+  condition: QueryUsersWhereWhereConditions
+}
+
+"""Роли"""
+type Role {
+  id: ID!
+
+  """Название"""
+  name: String!
+
+  """Комментарий"""
+  comment: String
+
+  """Разрешения"""
+  permissions: [Permission!]!
+
+  """Пользователи"""
+  users: [User!]!
+}
+
+"""The available SQL operators that are used to filter query results."""
+enum SQLOperator {
+  """Equal operator (`=`)"""
+  EQ
+
+  """Not equal operator (`!=`)"""
+  NEQ
+
+  """Greater than operator (`>`)"""
+  GT
+
+  """Greater than or equal operator (`>=`)"""
+  GTE
+
+  """DATE operator (betweеn start and end of day)"""
+  DATE
+
+  """Less than operator (`<`)"""
+  LT
+
+  """Less than or equal operator (`<=`)"""
+  LTE
+
+  """Simple pattern matching (`LIKE`)"""
+  LIKE
+
+  """Simple pattern matching (`ILIKE`)"""
+  ILIKE
+
+  """Negation of simple pattern matching (`NOT LIKE`)"""
+  NOT_LIKE
+
+  """Whether a value is within a set of values (`IN`)"""
+  IN
+
+  """Whether a value is not within a set of values (`NOT IN`)"""
+  NOT_IN
+
+  """Whether a value is within a range of values (`BETWEEN`)"""
+  BETWEEN
+
+  """Whether a value is not within a range of values (`NOT BETWEEN`)"""
+  NOT_BETWEEN
+
+  """Whether a value is null (`IS NULL`)"""
+  IS_NULL
+
+  """Whether a value is not null (`IS NOT NULL`)"""
+  IS_NOT_NULL
+}
+
+"""Услуга"""
+type Service {
+  id: ID!
+
+  """Название"""
+  name: String!
+
+  """Описание услуги"""
+  description: String
+
+  """Стоимость услуги"""
+  cost: Int
+
+  """Сортировка"""
+  sort: Int!
+
+  """Показать на сайте"""
+  is_active: Boolean!
+
+  """Дата создания"""
+  created_at: DateTimeTz!
+
+  """Дата обновления"""
+  updated_at: DateTimeTz!
+}
+
+"""A paginated list of Service items."""
+type ServicePaginator {
+  """Pagination information about the list of items."""
+  paginatorInfo: PaginatorInfo!
+
+  """A list of Service items."""
+  data: [Service!]!
+}
+
+"""Information about pagination using a simple paginator."""
+type SimplePaginatorInfo {
+  """Number of items in the current page."""
+  count: Int!
+
+  """Index of the current page."""
+  currentPage: Int!
+
+  """Index of the first item in the current page."""
+  firstItem: Int
+
+  """Index of the last item in the current page."""
+  lastItem: Int
+
+  """Number of items per page."""
+  perPage: Int!
+
+  """Are there more pages after this one?"""
+  hasMorePages: Boolean!
+}
+
+"""Directions for ordering a list of records."""
+enum SortOrder {
+  """Sort records in ascending order."""
+  ASC
+
+  """Sort records in descending order."""
+  DESC
+}
+
+enum SubsystemEnum {
+  """Users"""
+  USERS
+
+  """Administration"""
+  ADMINISTRATION
+
+  """Applications"""
+  APPLICATIONS
+
+  """Services"""
+  SERVICES
+}
+
+"""
+Specify if you want to include or exclude trashed results from a query.
+"""
+enum Trashed {
+  """Only return trashed results."""
+  ONLY
+
+  """Return both trashed and non-trashed results."""
+  WITH
+
+  """Only return non-trashed results."""
+  WITHOUT
+}
+
+input UpdateApplicationInput {
+  id: ID!
+
+  """Статус"""
+  status: ApplicationStatusEnum
+
+  """ИНН"""
+  inn: String
+
+  """Телефон"""
+  phone: String
+
+  """Email"""
+  email: String
+
+  """ФИО"""
+  fio: String
+
+  """Комментарий"""
+  comment: String
+}
+
+input UpdateApplicationServiceInput {
+  id: ID!
+
+  """Выбрана"""
+  is_selected: Boolean
+
+  """Название услуги"""
+  name: String
+
+  """Описание услуги"""
+  description: String
+
+  """Стоимость услуги"""
+  cost: Int
+
+  """Сортировка"""
+  sort: Int
+}
+
+input UpdateRoleInput {
+  id: ID!
+  name: String
+  comment: String
+  permissions: [PermissionsEnum!]
+}
+
+input UpdateServiceInput {
+  id: ID!
+
+  """Наименование услуги"""
+  name: String
+
+  """Описание"""
+  description: String
+
+  """Стоимость"""
+  cost: Int
+
+  """Сортировка"""
+  sort: Int
+
+  """Показать на сайте"""
+  is_active: Boolean
+}
+
+"""
+Загрузка файлов https://github.com/jaydenseric/graphql-multipart-request-spec
+"""
+scalar Upload
+
+type User {
+  id: ID!
+
+  """Логин пользователя"""
+  login: String!
+
+  """Метки времени создания/изменения"""
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+type UserLogin {
+  id: Int!
+  user: User!
+  token: String!
+}
+
+"""A paginated list of User items."""
+type UserPaginator {
+  """Pagination information about the list of items."""
+  paginatorInfo: PaginatorInfo!
+
+  """A list of User items."""
+  data: [User!]!
+}
+
+"""Dynamic WHERE conditions for queries."""
+input WhereConditions {
+  """The column that is used for the condition."""
+  column: String
+
+  """The operator that is used for the condition."""
+  operator: SQLOperator = EQ
+
+  """The value that is used for the condition."""
+  value: Mixed
+
+  """A set of conditions that requires all conditions to match."""
+  AND: [WhereConditions!]
+
+  """A set of conditions that requires at least one condition to match."""
+  OR: [WhereConditions!]
+
+  """
+  Check whether a relation exists. Extra conditions or a minimum amount can be applied.
+  """
+  HAS: WhereConditionsRelation
+}
+
+"""Dynamic HAS conditions for WHERE condition queries."""
+input WhereConditionsRelation {
+  """The relation that is checked."""
+  relation: String!
+
+  """The comparison operator to test against the amount."""
+  operator: SQLOperator = GTE
+
+  """The amount to test."""
+  amount: Int = 1
+
+  """Additional condition logic."""
+  condition: WhereConditions
+}
+

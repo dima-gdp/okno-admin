@@ -1,0 +1,12 @@
+mutation UpdateApplication($input: UpdateApplicationInput!) {
+    updateApplication(input: $input) {
+        id
+        status
+        inn
+        phone
+        email
+        fio
+        comment
+        service_cost
+    }
+}

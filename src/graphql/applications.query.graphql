@@ -1,0 +1,26 @@
+query ApplicationsList($first: Int, $page: Int, $orderBy: [QueryApplicationsOrderByOrderByClause!] ) {
+    applications(first: $first, page: $page, orderBy: $orderBy) {
+        data {
+            id
+            status
+            inn
+            phone
+            email
+            fio
+            comment
+            service_cost
+            created_at
+            updated_at
+        }
+        paginatorInfo {
+            count
+            currentPage
+            firstItem
+            hasMorePages
+            lastItem
+            lastPage
+            perPage
+            total
+        }
+    }
+}

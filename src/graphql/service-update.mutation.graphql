@@ -1,0 +1,10 @@
+mutation UpdateService($input: UpdateServiceInput!) {
+  updateService(input: $input) {
+    id
+    sort
+    is_active
+    description
+    cost
+    name
+  }
+}

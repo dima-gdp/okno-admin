@@ -1,0 +1,13 @@
+query Application($id: ID!) {
+  application(id: $id) {
+    id
+    inn
+    phone
+    email
+    fio
+    comment
+    status
+    created_at
+    updated_at
+  }
+}

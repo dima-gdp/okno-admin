@@ -1,0 +1,13 @@
+query ApplicationService($first: Int, $where: QueryApplicationServiceWhereWhereConditions ) {
+    applicationService(first: $first,where: $where) {
+        data {
+            id
+            application_id
+            is_selected
+            name
+            description
+            cost
+            sort
+        }
+    }
+}

@@ -1,0 +1,12 @@
+query ServicesList($first: Int, $orderBy: [QueryServicesOrderByOrderByClause!]) {
+  services(first: $first, orderBy: $orderBy) {
+    data {
+      id
+      name
+      description
+      cost
+      sort
+      is_active
+    }
+  }
+}

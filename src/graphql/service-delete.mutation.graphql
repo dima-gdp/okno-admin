@@ -1,0 +1,5 @@
+mutation DeleteService($id: ID!) {
+  deleteService(id: $id) {
+    ok
+  }
+}
